@@ -30,7 +30,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 sh """
-                docker build -t ${DOCKER_IMAGE}:${TAG} .
+                docker buildx build --load -t ${DOCKER_IMAGE}:${TAG} .
                 """
             }
         }
@@ -41,22 +41,40 @@ pipeline {
                 // sh "trivy image ${DOCKER_IMAGE}:${TAG}"
             }
         }
+        stage('Pre-Push Debug') {
+            steps {
+                sh """
+                 echo "Current user:"
+                 whoami
+
+                echo "Available images:"
+                docker images
+                """
+    }
 
         stage('Push to Docker Hub') {
             steps {
-                withCredentials([usernamePassword(
-                    credentialsId: 'docker-creds',
-                    usernameVariable: 'DOCKER_USER',
-                    passwordVariable: 'DOCKER_PASS'
-                )]) {
+            withCredentials([
+            usernamePassword(
+                credentialsId: 'docker-creds',
+                usernameVariable: 'DOCKER_USER',
+                passwordVariable: 'DOCKER_PASS'
+            )
+        ]) {
 
-                    sh """
-                    docker login -u $DOCKER_USER -p $DOCKER_PASS
-                    docker push ${DOCKER_IMAGE}:${TAG}
-                    """
-                }
-            }
+            sh """
+            echo "---- Docker Info ----"
+            docker info
+
+            echo "---- Testing Login ----"
+            echo \$DOCKER_PASS | docker login -u \$DOCKER_USER --password-stdin
+
+            echo "---- Pushing Image ----"
+            docker push ${DOCKER_IMAGE}:${TAG}
+            """
         }
+    }
+}
     }
 
     post {
