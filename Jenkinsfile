@@ -76,6 +76,35 @@ pipeline {
     }
 }
     }
+    stage('Update GitOps Manifest') {
+            steps {
+                script {
+                    // Use the same credential ID you used for Docker Hub, 
+                    // or create a new one for GitHub if needed.
+                    withCredentials([usernamePassword(credentialsId: 'e80a4b04-5208-42f0-9b52-fd5a38ee2efe', 
+                                     passwordVariable: 'GIT_PASSWORD', 
+                                     usernameVariable: 'GIT_USERNAME')]) {
+                        sh """
+                        # Set git identity
+                        git config --global user.email "jenkins@example.com"
+                        git config --global user.name "jenkins"
+                        
+                        # Clone your manifest repository
+                        git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Bharath1252001/spaceproject-gitops.git
+                        cd spaceproject-gitops/manifest
+                        
+                        # Update the image tag in deployment.yaml to the current build version
+                        sed -i "s|image: bharathg125/spaceproject:.*|image: bharathg125/spaceproject:${TAG}|" deployment.yaml
+                        
+                        # Commit and push changes
+                        git add deployment.yaml
+                        git commit -m "Update image tag to ${TAG} [skip ci]"
+                        git push origin main
+                        """
+                    }
+                }
+            }
+        }
 
     post {
         always {
