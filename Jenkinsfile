@@ -45,12 +45,17 @@ pipeline {
         }
 
         stage('Push to Docker Hub') {
-            steps {
-                sh """
-                docker login -u $DOCKER_USER -p $DOCKER_PASS
-                docker push ${DOCKER_IMAGE}:${TAG}
-                """
-            }
+            withCredentials([usernamePassword(
+            credentialsId: 'docker-creds',
+            usernameVariable: 'DOCKER_USER',
+            passwordVariable: 'DOCKER_PASS'
+        )]) {
+
+            sh """
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
+            docker push ${DOCKER_IMAGE}:${TAG}
+            """
+        }
         }
     }
 
