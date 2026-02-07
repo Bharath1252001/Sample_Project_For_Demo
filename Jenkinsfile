@@ -17,9 +17,15 @@ pipeline {
 
         stage('SonarQube SAST') {
             steps {
-                echo "Static Code Analysis - To be configured"
-            }
+        // 'sonar' must match the "Name" you gave the server in the Jenkins UI
+        withSonarQubeEnv('sonar') {
+            sh "sonar-scanner \
+                -Dsonar.projectKey=frontend-pipeline \
+                -Dsonar.sources=. \
+                -Dsonar.host.url=http://3.83.184.106:9000"
         }
+    }
+}
 
         stage('SCA - Dependency Check') {
             steps {
