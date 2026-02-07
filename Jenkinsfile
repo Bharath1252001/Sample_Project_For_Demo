@@ -54,28 +54,16 @@ pipeline {
         }
 
         stage('Push to Docker Hub') {
-            steps {
-                withCredentials([
-                    usernamePassword(
-                        credentialsId: 'docker-creds',
-                        usernameVariable: 'DOCKER_USER',
-                        passwordVariable: 'DOCKER_PASS'
-                    )
-                ]) {
-
-                    sh """
-                    echo "---- Docker Info ----"
-                    docker info
-
-                    echo "---- Testing Login ----"
-                    echo \$DOCKER_PASS | docker login -u \$DOCKER_USER --password-stdin
-
-                    echo "---- Pushing Image ----"
-                    docker push ${DOCKER_IMAGE}:${TAG}
-                    """
-                }
+    steps {
+        script {
+            // This securely logs you in and out automatically
+            withCredentials([usernamePassword(credentialsId: 'e80a4b04-5208-42f0-9b52-fd5a38ee2efe', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                sh "echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin"
+                sh "docker push ${DOCKER_IMAGE}:${TAG}"
             }
         }
+    }
+}
     }
 
     post {
