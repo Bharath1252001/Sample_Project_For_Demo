@@ -60,7 +60,7 @@ pipeline {
             steps {
                 script {
                     // Update this to 'github-creds' if you created the separate GitHub token credential
-                    withCredentials([usernamePassword(credentialsId: 'e80a4b04-5208-42f0-9b52-fd5a38ee2efe', 
+                    withCredentials([usernamePassword(credentialsId: 'github-creds', 
                                      passwordVariable: 'GIT_PASSWORD', 
                                      usernameVariable: 'GIT_USERNAME')]) {
                         sh """
