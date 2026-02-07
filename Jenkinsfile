@@ -37,7 +37,7 @@ pipeline {
 
         stage('Trivy Image Scan') {
             steps {
-                sh 'trivy image --severity HIGH,CRITICAL myimage:latest'
+                sh 'trivy image --severity HIGH,CRITICAL ${DOCKER_IMAGE}:${TAG}'
             }
         }
 
