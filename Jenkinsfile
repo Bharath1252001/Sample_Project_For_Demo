@@ -38,44 +38,44 @@ pipeline {
         stage('Trivy Image Scan') {
             steps {
                 echo "Trivy scan will be configured after installation"
-                // sh "trivy image ${DOCKER_IMAGE}:${TAG}"
             }
         }
+
         stage('Pre-Push Debug') {
             steps {
                 sh """
-                 echo "Current user:"
-                 whoami
+                echo "Current user:"
+                whoami
 
                 echo "Available images:"
                 docker images
                 """
             }
-    }
+        }
 
         stage('Push to Docker Hub') {
             steps {
-            withCredentials([
-            usernamePassword(
-                credentialsId: 'docker-creds',
-                usernameVariable: 'DOCKER_USER',
-                passwordVariable: 'DOCKER_PASS'
-            )
-        ]) {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'docker-creds',
+                        usernameVariable: 'DOCKER_USER',
+                        passwordVariable: 'DOCKER_PASS'
+                    )
+                ]) {
 
-            sh """
-            echo "---- Docker Info ----"
-            docker info
+                    sh """
+                    echo "---- Docker Info ----"
+                    docker info
 
-            echo "---- Testing Login ----"
-            echo \$DOCKER_PASS | docker login -u \$DOCKER_USER --password-stdin
+                    echo "---- Testing Login ----"
+                    echo \$DOCKER_PASS | docker login -u \$DOCKER_USER --password-stdin
 
-            echo "---- Pushing Image ----"
-            docker push ${DOCKER_IMAGE}:${TAG}
-            """
+                    echo "---- Pushing Image ----"
+                    docker push ${DOCKER_IMAGE}:${TAG}
+                    """
+                }
+            }
         }
-    }
-}
     }
 
     post {
