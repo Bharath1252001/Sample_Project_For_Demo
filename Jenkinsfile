@@ -86,8 +86,8 @@ pipeline {
                                      usernameVariable: 'GIT_USERNAME')]) {
                         sh """
                         # Set git identity
-                        git config --global user.email "jenkins@example.com"
-                        git config --global user.name "jenkins"
+                        git config --global user.email "bharathg1252001@gmail.com"
+                        git config --global user.name "Bharathg1252001"
                         
                         # Clone your manifest repository
                         git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Bharath1252001/spaceproject-gitops.git
