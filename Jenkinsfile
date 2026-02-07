@@ -17,14 +17,13 @@ pipeline {
 
         stage('SonarQube SAST') {
             steps {
-                echo "Static Code Analysis"
-                // will configure sonar next step
+                echo "Static Code Analysis - To be configured"
             }
         }
 
         stage('SCA - Dependency Check') {
             steps {
-                echo "Software Composition Analysis"
+                echo "Software Composition Analysis - To be configured"
             }
         }
 
@@ -38,24 +37,25 @@ pipeline {
 
         stage('Trivy Image Scan') {
             steps {
-                sh """
-                trivy image ${DOCKER_IMAGE}:${TAG}
-                """
+                echo "Trivy scan will be configured after installation"
+                // sh "trivy image ${DOCKER_IMAGE}:${TAG}"
             }
         }
 
         stage('Push to Docker Hub') {
-            withCredentials([usernamePassword(
-            credentialsId: 'docker-creds',
-            usernameVariable: 'DOCKER_USER',
-            passwordVariable: 'DOCKER_PASS'
-        )]) {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'docker-creds',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
 
-            sh """
-            docker login -u $DOCKER_USER -p $DOCKER_PASS
-            docker push ${DOCKER_IMAGE}:${TAG}
-            """
-        }
+                    sh """
+                    docker login -u $DOCKER_USER -p $DOCKER_PASS
+                    docker push ${DOCKER_IMAGE}:${TAG}
+                    """
+                }
+            }
         }
     }
 
