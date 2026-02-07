@@ -37,7 +37,7 @@ pipeline {
 
         stage('Trivy Image Scan') {
             steps {
-                echo "Trivy scan will be configured after installation"
+                sh 'trivy image --severity HIGH,CRITICAL myimage:latest'
             }
         }
 
