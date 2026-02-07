@@ -50,6 +50,7 @@ pipeline {
                 echo "Available images:"
                 docker images
                 """
+            }
     }
 
         stage('Push to Docker Hub') {
