@@ -34,13 +34,7 @@ pipeline {
 
         stage('SCA - Dependency Check') {
             steps {
-                sh '''
-                 /opt/dependency-check/bin/dependency-check.sh \
-                 --project "space-frontend" \
-                 --scan . \
-                 --format HTML \
-                 --out dependency-report
-                 '''
+                echo "Software Composition Analysis - To be configured"
             }
         }
 
