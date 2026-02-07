@@ -1,5 +1,10 @@
 pipeline {
     agent any
+    tools {
+        // This name MUST match exactly the Name you gave in Step 1
+        // and it should also include a JDK if your scanner requires it
+        'hudson.plugins.sonar.SonarRunnerInstallation': 'sonar-scanner'
+    }
 
     environment {
         DOCKER_IMAGE = "bharathg125/spaceproject"
