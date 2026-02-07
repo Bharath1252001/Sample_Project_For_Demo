@@ -1,10 +1,6 @@
 pipeline {
     agent any
-    tools {
-        // This name MUST match exactly the Name you gave in Step 1
-        // and it should also include a JDK if your scanner requires it
-        'hudson.plugins.sonar.SonarRunnerInstallation': 'sonar-scanner'
-    }
+    
 
     environment {
         DOCKER_IMAGE = "bharathg125/spaceproject"
@@ -22,12 +18,16 @@ pipeline {
 
         stage('SonarQube SAST') {
             steps {
+                script {
+            // Locates the installation path of your 'sonar-scanner' tool
+            def scannerHome = tool 'sonar-scanner'
         // 'sonar' must match the "Name" you gave the server in the Jenkins UI
         withSonarQubeEnv('sonar') {
             sh "sonar-scanner \
                 -Dsonar.projectKey=frontend-pipeline \
                 -Dsonar.sources=. \
                 -Dsonar.host.url=http://3.83.184.106:9000"
+        }
         }
     }
 }
@@ -48,7 +48,7 @@ pipeline {
 
         stage('Trivy Image Scan') {
             steps {
-                sh 'trivy image --severity HIGH,CRITICAL ${DOCKER_IMAGE}:${TAG}'
+                sh "trivy image --severity HIGH,CRITICAL ${DOCKER_IMAGE}:${TAG}"
             }
         }
 
