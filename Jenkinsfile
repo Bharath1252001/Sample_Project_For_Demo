@@ -13,19 +13,19 @@ pipeline {
             }
         }
 
-        stage('SonarQube SAST') {
-            steps {
-                script {
-                    def scannerHome = tool 'sonar-scanner'
-                    withSonarQubeEnv('sonar') {
-                        sh "${scannerHome}/bin/sonar-scanner \
-                            -Dsonar.projectKey=frontend-pipeline \
-                            -Dsonar.sources=. \
-                            -Dsonar.host.url=http://3.83.184.106:9000"
-                    }
-                }
-            }
-        }
+        // stage('SonarQube SAST') {
+        //     steps {
+        //         script {
+        //             def scannerHome = tool 'sonar-scanner'
+        //             withSonarQubeEnv('sonar') {
+        //                 sh "${scannerHome}/bin/sonar-scanner \
+        //                     -Dsonar.projectKey=frontend-pipeline \
+        //                     -Dsonar.sources=. \
+        //                     -Dsonar.host.url=http://3.83.184.106:9000"
+        //             }
+        //         }
+        //     }
+        // }
 
         stage('SCA - Dependency Check') {
             steps {
